@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=devops_user
+      - DB_PASSWORD=password123
+      - DB_NAME=devops_dashboard
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: devops_dashboard
+      POSTGRES_USER: devops_user
+      POSTGRES_PASSWORD: password123
+    volumes:
+    - ./db-init/init.sql:/docker-entrypoint-initdb.d/init.sql
